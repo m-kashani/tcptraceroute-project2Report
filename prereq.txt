@@ -1,0 +1,10 @@
+<libnet.h>
+sudo apt-get install libnet1-dev
+https://stackoverflow.com/questions/3788055/problem-with-libnet-install
+
+<pcap.h>
+sudo apt-get install libpcap0.8-dev
+https://github.com/ZerBea/hcxtools/issues/61
+
+<missing aclocal-1.4>
+autoreconf -f -i

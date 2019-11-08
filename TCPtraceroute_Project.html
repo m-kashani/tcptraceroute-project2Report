@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- saved from url=(0065)http://cobweb.cs.uga.edu/~cao/csci6760-f19/dev-projects/project2/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  
+  <title>Project 2</title>
+
+  
+</head><body>
+<span style="font-weight: bold;">Project 2</span>: TCP-based traceroute <br>
+
+<br>
+
+<span style="font-style: italic;">Type of Project</span>: Individual <br>
+
+<span style="font-style: italic;">Deadline</span>: 11:59 pm, 11/05/2019<br>
+
+<span style="font-style: italic;">Language</span>: C/C++, Java, Python, or another language <br>
+
+<span style="font-style: italic;">Points</span>: 30 points<br>
+<br>
+
+<span style="font-style: italic; font-weight: bold;">Submission
+  Guidelines</span>:
+Submit through ELC.
+Submit ONLY the source code (zip or tar.gz file). Automate the build process. For example, include
+a "<span style="font-weight: bold;">Makefile</span>" for C/C++ code, a pom.xml for Java code, a setup.py for Python code, etc.  Make sure to name the output executable as "tcp_traceroute".
+All files need to be under the same main directory (i.e., do not create subdirectories under "<span style="font-wei\
+ght: bold;">LastNameFirstName</span>-tcp_traceroute").
+<br>
+
+<br>
+
+<span style="text-decoration: underline;">NOTE</span>: project
+submissions that do not follow the guidelines risk to receive 0 points.<br>
+
+<span style="font-style: italic;"></span><br>
+
+<span style="font-style: italic;"><br>
+<span style="font-weight: bold;">Project Description</span></span>: In
+this project, you are asked to <span style="font-weight: bold;">use raw sockets</span>
+to write a simple traceroute-like program. This program increases the value of TTL in an IP
+datagram (referred to as an IP packet) it has crafted to carry a TCP segment.
+In a TCP segment, all flags in the header except PUSH must be off. TCP payload carries nothing but a string
+"CSCI6760-f19". When making a such packet, the program needs to calculate and fill in
+correct IP header checksum and TCP checksum.<br>
+<br>
+One can run your program using the following command: <br>
+<br>
+# ./tcp_traceroute &lt;DEST_IP&gt; &lt;TCP_PORT&gt;<br>
+<br>
+for example<br>
+<br>
+# ./tcp_traceroute&nbsp; 74.125.157.104&nbsp; 80<br>
+<br>
+The output should look like something below:<br>
+<br>
+&nbsp;1&nbsp; 128.192.254.49&nbsp; 0.355 ms&nbsp; 0.444 ms&nbsp; 0.479 ms<br>
+&nbsp;2&nbsp; 128.192.166.69&nbsp; 0.437 ms&nbsp; 0.463 ms&nbsp; 0.534 ms<br>
+&nbsp;3&nbsp; 128.192.76.129&nbsp; 0.507 ms&nbsp; 0.614 ms&nbsp; 0.756 ms<br>
+&nbsp;4&nbsp; 128.192.0.5&nbsp; 0.580 ms&nbsp; 0.899 ms&nbsp; 1.226 ms<br>
+&nbsp;5&nbsp; 70.33.127.97&nbsp; 2.561 ms&nbsp; 2.281 ms&nbsp; 2.052 ms<br>
+&nbsp;6&nbsp; 72.14.239.100&nbsp; 4.046 ms&nbsp; 4.474 ms&nbsp; 4.331 ms<br>
+&nbsp;7&nbsp; 209.85.252.66&nbsp; 4.346 ms&nbsp; 4.147 ms&nbsp; 17.470 ms<br>
+&nbsp;8&nbsp; 209.85.254.249&nbsp; 5.487 ms&nbsp; 5.364 ms&nbsp; 4.814 ms<br>
+&nbsp;9&nbsp; 74.125.157.104&nbsp; 5.295 ms&nbsp; 6.790 ms&nbsp; 7.464 ms<br>
+<br>
+The TTL must start from 1 and go to a maximum of 30. For each TTL, the round trip time
+needs to be measured for 3 times. That means, your program will send out 3 packets with
+TTL 1, 3 packets with TTL 2, etc. To each packet you have sent, an ICMP response will be
+sent back, indicating expiration of TTL (often carried in a "Time Exceeded" ICMP packet).
+By timing the difference between when a packet is sent out and when a corresponding ICMP
+response arrives, you can further calculate time variations for a particular TTL.
+<br>
+<br>
+Your code must appropriately handle response packets delivered from the network. 
+Refer to <a href="https://tools.ietf.org/html/rfc792"> RFC 792 </a> on how to interpret
+ICMP messages, such as "Port Unreachable" and "Host Unreachable". When TTL is raised
+above a certain point, your packets get close to the destination.  TCP
+protocol and firewall settings might affect what responses your program receives. 
+If your packet hits an open (LISTEN) port on the destination end host, your program
+may receive a TCP RST (reset) packet. Also, note that firewall on destination network
+might be configured to drop outgoing ICMP TTL expired traffic, and/or incoming TCP non-ACK traffic.
+<br>
+<br>
+Packet loss might happen to a trace probing packet or the response packet during
+transfer in the network. You should use a timer and set a timeout interval to
+1 second. If your program does not receive an ICMP "Time Exceeded" or a TCP RST packet
+before getting a timeout, you can assume the response packet is lost. 
+<br>
+<br>
+<br>
+<span style="text-decoration: underline;">TESTING YOUR CODE</span><br>
+You should test your code in multiple scenarios. Find some
+IP addresses to which the routes are stable
+and compare your results with the output of "traceroute" (use the -T
+and -p and -n options).<br>
+<br>
+<br>
+
+<span style="text-decoration: underline;">MAILING LIST</span>: If you
+have questions about the project, the best place to ask is on eLC, or to talk to me after class or during an office hour.<br>
+
+<br>
+<br>
+
+<span style="text-decoration: underline;">PROJECT EVALUATION</span><br>
+I will run your progarm on 5 different combinations of &lt;DEST_IP&gt; and
+&lt;TCP_PORT&gt;. You will get 4 points for each test that
+produces an acceptable output (as compared to traceroute and my own
+implementation of the program).<br>
+
+<br>
+<br>
+<span style="text-decoration: underline;">RESOURCES</span><br>
+Slides on traceroute: <a href="http://cobweb.cs.uga.edu/~cao/csci6760-f19/dev-projects/project2/tcp-based-traceroute.pdf">lecture slides</a>
+<br>
+<br>
+You can find information about how to use raw sockets here:<br>
+<br>
+<a href="http://sock-raw.org/papers/sock_raw">http://sock-raw.org/papers/sock_raw</a><br>
+<a href="http://www.tenouk.com/Module43a.html">http://www.tenouk.com/Module43a.html</a><br>
+<br>
+<br>
+<br>
+<br>
+
+</body></html>
